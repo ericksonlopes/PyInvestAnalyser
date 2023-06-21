@@ -11,5 +11,3 @@ class Active:
     dividend_yield: str = None
     appreciation: str = None
     grade: str = None
-
-# Pegando informações da página de ativos
