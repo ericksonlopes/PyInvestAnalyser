@@ -11,13 +11,13 @@ from Active import Active
 
 
 def download_webdriver():
-    # Obtém o sistema operacional atual
+    # gets the current operating system
     system = platform.system()
 
-    # Diretório onde o webdriver será armazenado
+    # Directory where the webdriver will be stored
     webdriver_dir = os.path.join(os.getcwd(), 'webdriver')
 
-    # Verifica o sistema operacional e define o URL e o nome do driver apropriado
+    # Checks the operating system and sets the appropriate driver URL and name
     if system == 'Windows':
         driver_url = 'https://chromedriver.storage.googleapis.com/LATEST_RELEASE'
         driver_name = 'chromedriver_win32.zip'
@@ -28,35 +28,33 @@ def download_webdriver():
         print(f'Não há suporte para o sistema operacional {system}.')
         return
 
-    # Cria o diretório do webdriver, se não existir
+    # Create the webdriver directory if it doesn't exist
     os.makedirs(webdriver_dir, exist_ok=True)
 
-    # Cria um arquivo .gitignore dentro do diretório do webdriver
-    # para que ele seja ignorado pelo controle de versão (Git)
+    # Creates a .gitignore file inside the webdriver directory so that it will be ignored by version control (Git)
     print("*", file=open(os.path.join(webdriver_dir, ".gitignore"), 'w', encoding='utf-8'))
 
-    # Caminho completo para o webdriver
+    # Full path to webdriver
     webdriver_path = os.path.join(webdriver_dir, driver_name)
 
-    # Verifica se o webdriver já foi baixado
+    # Checks if the webdriver has already been downloaded
     if not os.path.exists(webdriver_path):
         try:
             import requests
-            # Obtém a versão mais recente do webdriver
+            # Get the latest version of the webdriver
             response = requests.get(driver_url)
             version = response.text.strip()
-            # Constrói o URL de download do webdriver
+            # Constructs the webdriver download URL
             driver_url = f'https://chromedriver.storage.googleapis.com/{version}/{driver_name}'
             response = requests.get(driver_url)
-            # Salva o arquivo do webdriver no disco
+            # Save the webdriver file to disk
             with open(webdriver_path, 'wb') as file:
                 file.write(response.content)
             print(f'Webdriver baixado com sucesso para {system}.')
         except Exception as e:
             print(f'Falha ao baixar o webdriver: {str(e)}')
     else:
-        # print(f'O webdriver para {system} já existe.')
-        pass
+        print(f'O webdriver para {system} já existe.')
 
     return webdriver_path
 
@@ -135,6 +133,7 @@ def main():
         {"active": 'BBDC3', "type": "acoes"},
         {"active": 'BBSE3', "type": "acoes"},
         {"active": 'BIME11', "type": "fiis"},
+        {"active": 'MXRF11', "type": "fiis"},
         {"active": 'SNAG11', "type": "fiis"},
         {"active": 'BMGB4', "type": "acoes"},
     ]
