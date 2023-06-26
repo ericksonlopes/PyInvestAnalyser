@@ -1,33 +1,36 @@
 from dataclasses import dataclass
+from types import MappingProxyType
 
 from src.models.Active import Active
 
 
 @dataclass
 class BDR(Active):
-    p_l: float = None
-    p_vp: float = None
-    p_e: float = None
-    dividend_yield: float = None
-    roa: float = None
-    roe: float = None
-    roic: float = None
-    net_margin: float = None
-    gross_margin: float = None
-    operating_margin: float = None
-    p_ebit: float = None
-    p_ebitda: float = None
-    p_assets: float = None
-    vpa: float = None
-    lpa: float = None
-    equity_assets_ratio: float = None
-    liabilities_assets_ratio: float = None
-    cagr_revenues_5_years: float = None
-    cagr_earnings_5_years: float = None
+    p_l: str = None
+    p_vp: str = None
+    p_e: str = None
+    dividend_yield: str = None
+    roa: str = None
+    roe: str = None
+    roic: str = None
+    net_margin: str = None
+    gross_margin: str = None
+    operating_margin: str = None
+    p_ebit: str = None
+    p_ebitda: str = None
+    p_assets: str = None
+    vpa: str = None
+    lpa: str = None
+    equity_assets_ratio: str = None
+    liabilities_assets_ratio: str = None
+    cagr_revenues_5_years: str = None
+    cagr_earnings_5_years: str = None
 
-    @staticmethod
-    def get_meaning_of_fields() -> dict:
-        return {
+    @classmethod
+    def get_meaning_of_fields(cls) -> MappingProxyType:
+        active_default = super().get_meaning_of_fields()
+
+        bdr = {
             'p_l': 'P/L Preço sobre o Lucro',
             'p_vp': 'P/VP Preço sobre o Valor Patrimonial',
             'p_e': 'P/E = Índice Preço Lucro',
@@ -48,3 +51,5 @@ class BDR(Active):
             'cagr_revenues_5_years': 'Crescimento anual composta 5 Anos',
             'cagr_earnings_5_years': 'Crescimento anual composta 5 Anos',
         }
+
+        return MappingProxyType(dict(**active_default, **bdr))

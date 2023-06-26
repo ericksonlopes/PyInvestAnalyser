@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from types import MappingProxyType
 
 from src.models.Active import Active
 
@@ -37,9 +38,11 @@ class Stock(Active):
     cagr_revenues_5_years: str = None
     cagr_earnings_5_years: str = None
 
-    @staticmethod
-    def get_meaning_of_fields() -> dict:
-        return {
+    @classmethod
+    def get_meaning_of_fields(cls) -> MappingProxyType:
+        active_default = super().get_meaning_of_fields()
+
+        stock = {
             'p_l': 'Preço sobre o Lucro',
             'p_vp': 'Preço sobre o Valor Patrimonial',
             'dividend_yield': 'DIVIDEND YIELD',
@@ -72,3 +75,5 @@ class Stock(Active):
             'cagr_revenues_5_years': 'Crescimento anual composta 5 Anos',
             'cagr_earnings_5_years': 'Crescimento anual composta 5 Anos'
         }
+
+        return MappingProxyType(dict(active_default, **stock))

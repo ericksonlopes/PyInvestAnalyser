@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from types import MappingProxyType
 
 from src.models.Active import Active
 
@@ -21,9 +22,11 @@ class RealEstateFunds(Active):
     net_asset_value: float = None
     last_yield: float = None
 
-    @staticmethod
-    def get_meaning_of_fields() -> dict:
-        return {
+    @classmethod
+    def get_meaning_of_fields(cls) -> MappingProxyType:
+        active_default = super().get_meaning_of_fields()
+
+        ref = {
             "company_name": "Razão Social",
             "cnpj": "CNPJ",
             "target_audience": "PÚBLICO - ALVO",
@@ -40,3 +43,5 @@ class RealEstateFunds(Active):
             "net_asset_value": "VALOR PATRIMONIAL",
             "last_yield": "ÚLTIMO RENDIMENTO"
         }
+
+        return MappingProxyType(dict(**active_default, **ref))

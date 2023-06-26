@@ -4,6 +4,7 @@ from dataclasses import dataclass
 @dataclass
 class Active:
     name: str = None
+    company_name: str = None
     type: str = None
     quotation: str = None
     price_to_book_ratio: str = None
@@ -16,6 +17,7 @@ class Active:
     def get_meaning_of_fields():
         return {
             'name': 'Nome',
+            'company_name': 'Nome da Empresa',
             'type': 'Tipo',
             'quotation': 'Cotação',
             'price_to_book_ratio': 'P/VP - Preço sobre o Valor Patrimonial',

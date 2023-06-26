@@ -1,0 +1,33 @@
+version: "3.8"
+
+services:
+    selenoid-ui:
+        image: "aerokube/selenoid-ui"
+        network_mode: bridge
+        restart: always
+        links:
+            - selenoid
+        ports:
+            - "8080:8080"
+        command: ["--selenoid-uri", "http://selenoid:4444"]
+        depends_on:
+            - selenoid
+
+    selenoid:
+        image: "aerokube/selenoid:latest"
+        network_mode: bridge
+        restart: always
+        ports:
+            - "4444:4444"
+        volumes:
+            - "./config:/etc/selenoid/"
+            - "/var/run/docker.sock:/var/run/docker.sock"
+
+    selenoid-chrome:
+        image: "selenoid/chrome:latest"
+        network_mode: bridge
+        restart: always
+        volumes:
+            - "/var/run/docker.sock:/var/run/docker.sock"
+        depends_on:
+            - selenoid

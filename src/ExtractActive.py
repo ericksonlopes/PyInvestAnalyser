@@ -4,8 +4,8 @@ from bs4 import BeautifulSoup, Tag
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 
-from settings import get_webdriver
 from src.exceptions import ActiveSearchError
+from src.helpers import get_webdriver
 from src.models import Active, Stock, RealEstateFunds, BDR
 
 
@@ -29,10 +29,6 @@ class ExtractActiveInformation(ABC):
     def get_grade(self):
         pass
 
-    @classmethod
-    def webdriver(cls):
-        return get_webdriver()
-
     def get_indicators(self) -> dict:
         indicators = {}
 
@@ -54,7 +50,7 @@ class ExtractActiveInformation(ABC):
         active = Active(name=active_name, type=active_type)
 
         try:
-            if time_for_loop > 5:
+            if time_for_loop == 5:
                 raise ActiveSearchError("Error to get information for active")
 
             url = f"https://investidor10.com.br/{active_type}/{active_name}/"
@@ -70,8 +66,10 @@ class ExtractActiveInformation(ABC):
 
             html = driver.page_source
             soup = BeautifulSoup(html, 'html.parser')
-
             self.soup = soup
+
+            company_name = soup.find(class_='name-ticker').find("h2")
+            active.company_name = company_name.text
 
             quotation = soup.find('div', class_='_card cotacao').find("div", class_="_card-body").find("span")
             active.quotation = quotation.text
@@ -97,7 +95,8 @@ class ExtractActiveInformation(ABC):
             driver.quit()
             return self.get_active_keys_indicators(active_name, active_type)
 
-        except Exception:
+        except Exception as error:
+            print(error)
             driver.quit()
             return self.get_page_infos_for_active(active_name, active_type, time_for_loop + 1)
 

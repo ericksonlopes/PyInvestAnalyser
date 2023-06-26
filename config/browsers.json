@@ -1,0 +1,19 @@
+{
+  "chrome": {
+    "default": "latest",
+    "versions": {
+      "latest": {
+        "image": "selenoid/chrome:latest",
+        "port": "4444",
+        "path": "/",
+        "env": [
+          "TZ=America/Sao_Paulo",
+          "LANG=pt_BR.UTF-8",
+          "LANGUAGE=pt_BR:en",
+          "LC_ALL=pt_BR.UTF-8",
+          "NO_PROXY=selenoid,127.0.0.1"
+        ]
+      }
+    }
+  }
+}
