@@ -1,8 +1,8 @@
 import concurrent.futures
 import csv
 
-from src.ExtractActive import ExtractInfoFromStock
 from src.models import Stock
+from src.services import ExtractInfoFromStock
 
 actives = [
     # {"active": 'AAPL34', "type": "bdrs"},
@@ -25,7 +25,6 @@ with concurrent.futures.ThreadPoolExecutor() as executor:
     for future in concurrent.futures.as_completed(futures):
         try:
             active = future.result()
-            print(active)
             result_actives.append(active)
 
         except Exception as e:

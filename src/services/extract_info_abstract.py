@@ -4,13 +4,15 @@ from bs4 import BeautifulSoup, Tag
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 
+from config import Logger
 from src.exceptions import ActiveSearchError
 from src.helpers import get_webdriver
-from src.models import Active, Stock, RealEstateFunds, BDR
+from src.models import Active
 
 
-class ExtractActiveInformation(ABC):
+class ExtractActiveInformation(ABC, Logger):
     def __init__(self):
+        super().__init__()
         self.soup = None
 
     @abstractmethod
@@ -44,7 +46,7 @@ class ExtractActiveInformation(ABC):
         return indicators
 
     def get_page_infos_for_active(self, active_name, active_type, time_for_loop=0) -> dict:
-        print(f"Getting information {active_name}... {time_for_loop if time_for_loop > 0 else ''}")
+        self.logger.info(f"Getting information {active_name}... {time_for_loop if time_for_loop > 0 else ''}")
 
         driver = get_webdriver()
         active = Active(name=active_name, type=active_type)
@@ -91,94 +93,21 @@ class ExtractActiveInformation(ABC):
 
             indicators = self.get_indicators()
 
-        except ActiveSearchError:
+        except ActiveSearchError as error:
             driver.quit()
+            self.logger.error(f"Error to get information for active {active_name}", error)
             return self.get_active_keys_indicators(active_name, active_type)
 
         except Exception as error:
-            print(error)
             driver.quit()
+            self.logger.warning(f"Error to get information for active {active_name}", error)
             return self.get_page_infos_for_active(active_name, active_type, time_for_loop + 1)
 
         if "-" in active.quotation:
+            driver.quit()
+            self.logger.warning(f"Error to get information for active {active_name} '-' quotation is not available")
             return self.get_page_infos_for_active(active_name, active_type, time_for_loop + 1)
 
         driver.quit()
+        self.logger.info(f"Information for active {active_name} successfully obtained")
         return {**active.__dict__, **indicators}
-
-
-class ExtractInfoFromBDR(ExtractActiveInformation):
-    def __init__(self):
-        super().__init__()
-
-    def get_grade(self):
-        return "-"
-
-    def get_value_cell(self, cell: Tag):
-        return cell.div.text.replace("\n", "")
-
-    def get_active_keys_indicators(self, active_name, active_type) -> dict:
-        return BDR(name=active_name, type=active_type).__dict__
-
-    def get_info_active(self, active_name: str) -> BDR:
-        bdr = self.get_page_infos_for_active(active_name, "bdrs")
-
-        ret_bdr = BDR()
-        list_bdr_keys = list(BDR().__dict__.keys())
-
-        for num in range(len(list_bdr_keys)):
-            ret_bdr.__dict__[list_bdr_keys[num]] = list(bdr.values())[num]
-
-        return ret_bdr
-
-
-class ExtractInfoFromREF(ExtractActiveInformation):
-    def __init__(self):
-        super().__init__()
-
-    def get_grade(self):
-        return "-"
-
-    def get_value_cell(self, cell: Tag) -> str:
-        return cell.find("div", class_="value").text.replace("\n", "")
-
-    def get_active_keys_indicators(self, active_name, active_type) -> dict:
-        return RealEstateFunds(name=active_name, type=active_type).__dict__
-
-    def get_info_active(self, active_name: str) -> RealEstateFunds:
-        ref = self.get_page_infos_for_active(active_name, "fiis")
-
-        ret_ref = RealEstateFunds()
-        list_keys_ref = list(RealEstateFunds().__dict__.keys())
-
-        for num in range(len(list_keys_ref)):
-            ret_ref.__dict__[list_keys_ref[num]] = list(ref.values())[num]
-
-        return ret_ref
-
-
-class ExtractInfoFromStock(ExtractActiveInformation):
-    def __init__(self):
-        super().__init__()
-
-    def get_value_cell(self, cell: Tag):
-        return cell.div.text.replace("\n", "")
-
-    def get_active_keys_indicators(self, active_name, active_type) -> dict:
-        return Stock(name=active_name, type=active_type).__dict__
-
-    def get_grade(self):
-        grade = self.soup.find('div', id="checklist").find('div', class_='rating')
-        grade_text = grade.text.replace("\n", "").replace(" ", "").replace("Nota", "").replace(":", "")
-        return grade_text
-
-    def get_info_active(self, active_name) -> Stock:
-        stock = self.get_page_infos_for_active(active_name, "acoes")
-
-        ret_stock = Stock()
-        list_keys_stock = list(Stock().__dict__.keys())
-
-        for num in range(len(list_keys_stock)):
-            ret_stock.__dict__[list_keys_stock[num]] = list(stock.values())[num]
-
-        return ret_stock
