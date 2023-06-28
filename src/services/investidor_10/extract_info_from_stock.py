@@ -1,7 +1,7 @@
 from bs4 import Tag
 
 from src.models import Stock
-from src.services.extract_info_abstract import ExtractActiveInformation
+from src.services.investidor_10.extract_info_abstract import ExtractActiveInformation
 
 
 class ExtractInfoFromStock(ExtractActiveInformation):
@@ -11,8 +11,8 @@ class ExtractInfoFromStock(ExtractActiveInformation):
     def get_value_cell(self, cell: Tag):
         return cell.div.text.replace("\n", "")
 
-    def get_active_keys_indicators(self, active_name, active_type) -> dict:
-        return Stock(name=active_name, type=active_type).__dict__
+    def get_active_keys_indicators(self, active_name) -> Stock:
+        return Stock(name=active_name, type="acoes")
 
     def get_grade(self):
         grade = self.soup.find('div', id="checklist").find('div', class_='rating')

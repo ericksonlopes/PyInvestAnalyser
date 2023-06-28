@@ -45,7 +45,7 @@ class Stock(Active):
         stock = {
             'p_l': 'Preço sobre o Lucro',
             'p_vp': 'Preço sobre o Valor Patrimonial',
-            'dividend_yield': 'DIVIDEND YIELD',
+            'dividend_yield_stock': 'DIVIDEND YIELD Ação',
             'payout': 'PAYOUT',
             'net_margin': 'MARGEM LÍQUIDA',
             'gross_margin': 'MARGEM BRUTA',

@@ -5,26 +5,24 @@ from src.models import Stock
 from src.services import ExtractInfoFromStock
 
 actives = [
-    # {"active": 'AAPL34', "type": "bdrs"},
-    {"active": 'B3SA3', "type": "acoes"},
-    {"active": 'BBDC3', "type": "acoes"},
-    {"active": 'BBSE3', "type": "acoes"},
-    # {"active": 'BIME11', "type": "fiis"},
-    # {"active": 'MXRF11', "type": "fiis"},
-    # {"active": 'SNAG11', "type": "fiis"},
-    {"active": 'BMGB4', "type": "acoes"},
+    'B3SA3',
+    'BBDC3',
+    'BBSE3',
+    'BMGB4'
 ]
 
 result_actives = []
 
-# print(ExtractInfoFromStock().get_info_active("B3SA3"))
-
 with concurrent.futures.ThreadPoolExecutor() as executor:
-    futures = [executor.submit(ExtractInfoFromStock().get_info_active, active["active"]) for active in actives]
+    futures = [executor.submit(ExtractInfoFromStock().get_info_active, active) for active in actives]
 
     for future in concurrent.futures.as_completed(futures):
         try:
             active = future.result()
+
+            if isinstance(active, str):
+                active = ExtractInfoFromStock().get_active_keys_indicators(active)
+
             result_actives.append(active)
 
         except Exception as e:
@@ -36,3 +34,5 @@ with open('result_for_actives.csv', 'w', newline='', encoding="utf-8") as file:
 
     for active in result_actives:
         writer.writerow(active.__dict__.values())
+
+

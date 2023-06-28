@@ -1,7 +1,7 @@
 from bs4 import Tag
 
 from src.models import BDR
-from src.services.extract_info_abstract import ExtractActiveInformation
+from src.services.investidor_10.extract_info_abstract import ExtractActiveInformation
 
 
 class ExtractInfoFromBDR(ExtractActiveInformation):
@@ -14,8 +14,8 @@ class ExtractInfoFromBDR(ExtractActiveInformation):
     def get_value_cell(self, cell: Tag):
         return cell.div.text.replace("\n", "")
 
-    def get_active_keys_indicators(self, active_name, active_type) -> dict:
-        return BDR(name=active_name, type=active_type).__dict__
+    def get_active_keys_indicators(self, active_name) -> BDR:
+        return BDR(name=active_name, type="bdrs")
 
     def get_info_active(self, active_name: str) -> BDR:
         bdr = self.get_page_infos_for_active(active_name, "bdrs")

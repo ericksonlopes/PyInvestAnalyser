@@ -1,7 +1,7 @@
 from bs4 import Tag
 
 from src.models import RealEstateFunds
-from src.services.extract_info_abstract import ExtractActiveInformation
+from src.services.investidor_10.extract_info_abstract import ExtractActiveInformation
 
 
 class ExtractInfoFromREF(ExtractActiveInformation):
@@ -14,8 +14,8 @@ class ExtractInfoFromREF(ExtractActiveInformation):
     def get_value_cell(self, cell: Tag) -> str:
         return cell.find("div", class_="value").text.replace("\n", "")
 
-    def get_active_keys_indicators(self, active_name, active_type) -> dict:
-        return RealEstateFunds(name=active_name, type=active_type).__dict__
+    def get_active_keys_indicators(self, active_name) -> RealEstateFunds:
+        return RealEstateFunds(name=active_name, type="ref")
 
     def get_info_active(self, active_name: str) -> RealEstateFunds:
         ref = self.get_page_infos_for_active(active_name, "fiis")

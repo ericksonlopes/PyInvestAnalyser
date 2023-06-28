@@ -16,7 +16,7 @@ class ExtractActiveInformation(ABC, Logger):
         self.soup = None
 
     @abstractmethod
-    def get_active_keys_indicators(self, active_name, active_type) -> dict:
+    def get_active_keys_indicators(self, active_name) -> dict:
         pass
 
     @abstractmethod
@@ -53,7 +53,7 @@ class ExtractActiveInformation(ABC, Logger):
 
         try:
             if time_for_loop == 5:
-                raise ActiveSearchError("Error to get information for active")
+                raise ActiveSearchError(f"Error to get information for active {active_name}")
 
             url = f"https://investidor10.com.br/{active_type}/{active_name}/"
 
@@ -95,12 +95,12 @@ class ExtractActiveInformation(ABC, Logger):
 
         except ActiveSearchError as error:
             driver.quit()
-            self.logger.error(f"Error to get information for active {active_name}", error)
-            return self.get_active_keys_indicators(active_name, active_type)
+            self.logger.error(f"Maximum attempts to get information for active {active_name} {error}")
+            return active_name
 
         except Exception as error:
             driver.quit()
-            self.logger.warning(f"Error to get information for active {active_name}", error)
+            self.logger.error(f"Error to get information for active {active_name} {error}")
             return self.get_page_infos_for_active(active_name, active_type, time_for_loop + 1)
 
         if "-" in active.quotation:
