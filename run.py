@@ -34,5 +34,3 @@ with open('result_for_actives.csv', 'w', newline='', encoding="utf-8") as file:
 
     for active in result_actives:
         writer.writerow(active.__dict__.values())
-
-
