@@ -7,22 +7,12 @@ jobs:
     runs-on: ubuntu-latest
 
     services:
-      selenoid:
-        image: aerokube/selenoid:latest
-        ports:
-          - 4444:4444
-        volumes:
-          - ./config:/etc/selenoid/
-          - /var/run/docker.sock:/var/run/docker.sock
-
-      selenoid-ui:
-        image: aerokube/selenoid-ui
-        ports:
-          - 8080:8080
-        depends_on:
-          - selenoid
 
     steps:
+      - name: Start selenoid
+        run: |
+          docker-compose up -d
+
       - name: Checkout repository
         uses: actions/checkout@v3
 
