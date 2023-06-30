@@ -1,0 +1,56 @@
+name: Tests
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.9"]
+
+    services:
+      selenoid:
+        image: "aerokube/selenoid:latest"
+        ports:
+            - "4444:4444"
+        volumes:
+            - "./config:/etc/selenoid/"
+            - "/var/run/docker.sock:/var/run/docker.sock"
+
+    selenoid-ui:
+      image: "aerokube/selenoid-ui"
+      restart: always
+      links:
+        - selenoid
+      hostname: selenoid-ui
+      ports:
+        - "8080:8080"
+      command: ["--selenoid-uri", "http://selenoid:4444"]
+      depends_on:
+         - selenoid
+
+    selenoid-chrome:
+      image: "selenoid/chrome:latest"
+      hostname: selenoid-chrome
+      volumes:
+        - "/var/run/docker.sock:/var/run/docker.sock"
+      depends_on:
+        - selenoid-ui
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          pip install pipenv
+          pipenv install --system
+
+      - name: Test with pytest
+        run: |
+          pytest
