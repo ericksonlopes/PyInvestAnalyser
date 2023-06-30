@@ -13,8 +13,6 @@ jobs:
       image: aerokube/selenoid:latest
       ports:
         - "4444:4444"
-      volumes:
-        - "./config:/etc/selenoid/"
 
     steps:
       - uses: actions/checkout@v3
