@@ -19,8 +19,7 @@ jobs:
         image: aerokube/selenoid-ui
         ports:
           - 8080:8080
-        command: --selenoid-uri http://selenoid:4444
-        depends-on:
+        depends_on:
           - selenoid
 
     steps:
@@ -42,9 +41,18 @@ jobs:
           pip install pipenv
           pipenv install --system
 
+      - name: Start selenoid
+        run: |
+          docker-compose up -d selenoid
+
+      - name: Start selenoid-ui
+        run: |
+          docker-compose up -d selenoid-ui
+
       - name: Test with pytest
         run: |
           pytest
 
       - name: Clean up
-        run: docker-compose down
+        run: |
+          docker-compose down
