@@ -70,14 +70,14 @@ imobiliários e DBRs):
 
 Aqui esta um exemplo de como importar a classe ExtractInfoFromStock para obter informações sobre a ação B3SA3:
 
-   ```python
-   from src.services import ExtractInfoFromStock
+```python
+from src.services import ExtractInfoFromStock
 
 stock = ExtractInfoFromStock().get_info_active('B3SA3')
 
 print(stock)
 # Stock(name='B3SA3', company_nam...
-   ```
+```
 
 Além disso, dando contexto a um exemplo mais complexo, você pode executar um script em muilthread para obter informações
 de vários ativos ao mesmo tempo:
