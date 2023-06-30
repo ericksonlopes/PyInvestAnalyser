@@ -6,6 +6,23 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
+    services:
+      selenoid:
+        image: aerokube/selenoid:latest
+        ports:
+          - 4444:4444
+        volumes:
+          - ./config:/etc/selenoid/
+          - /var/run/docker.sock:/var/run/docker.sock
+
+      selenoid-ui:
+        image: aerokube/selenoid-ui
+        ports:
+          - 8080:8080
+        options: --link selenoid
+        needs:
+          - selenoid
+
     steps:
       - name: Start selenoid
         run: |
