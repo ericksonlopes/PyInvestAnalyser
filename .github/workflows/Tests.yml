@@ -9,11 +9,6 @@ jobs:
       matrix:
         python-version: ["3.8"]
 
-    container:
-      image: aerokube/selenoid:latest
-      ports:
-        - "4444:4444"
-
     steps:
       - uses: actions/checkout@v3
 
@@ -21,6 +16,11 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
+
+      - name: Install pip
+        run: |
+          python -m ensurepip
+          python -m pip install --upgrade pip
 
       - name: Install dependencies
         run: |
