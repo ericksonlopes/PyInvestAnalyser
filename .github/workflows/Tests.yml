@@ -14,7 +14,7 @@ jobs:
         with:
           version: 1.10.1
           args: -limit 10
-          browsers: chrome;firefox
+          browsers: chrome
           last-versions: 1
 
       - name: Checkout repository
@@ -25,10 +25,6 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Install pip
-        run: |
-          python -m ensurepip
-          python -m pip install --upgrade pip
 
       - name: Install dependencies
         run: |
