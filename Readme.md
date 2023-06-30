@@ -13,62 +13,61 @@
 
 [//]: # (![Gunicorn]&#40;https://img.shields.io/badge/-Gunicorn-499848?&logo=gunicorn&logoColor=FFFFFF&#41;)
 
+PyInvestAnalyser is a Python project that uses web scraping to obtain data on financial assets. With the help of
+Selenium, Docker, and Pyenv libraries, you can analyze relevant information about different assets in an automated
+manner.
 
-O PyInvestAnalyser é um projeto desenvolvido em Python que utiliza web scraping para obter dados sobre ativos
-financeiros. Com o auxílio das bibliotecas Selenium, Docker e Pyenv, você pode analisar informações relevantes sobre
-diferentes ativos de forma automatizada.
+## Prerequisites
 
-## Pré-requisitos
+Before you start, make sure you have the following prerequisites installed:
 
-Antes de começar, verifique se você possui os seguintes pré-requisitos instalados:
-
-- Python (recomendado usar Pyenv para gerenciamento de pacotes)
+- Python (recommended to use Pyenv for package management)
 - Docker
 
-## Instalação
+## Installation
 
-Siga as etapas abaixo para instalar o projeto:
+Follow the steps below to install the project:
 
-1. Clone este repositório:
+1. Clone this repository:
 
    ```
    $ git clone https://github.com/ericksonlopes/PyInvestAnalyser.git
    ```
 
-2. Acesse o diretório do projeto:
+2. Access the project directory:
 
    ```
    $ cd PyInvestAnalyser
    ```
 
-3. Crie e ative um ambiente virtual com o Pyenv:
+3. Create and activate a virtual environment with Pyenv:
 
    ```
    $ pip install pipenv
    $ pipenv install
    ```
 
-4. Instale as dependências do projeto:
+4. Install project dependencies:
 
    ```
    $ pip install -r requirements.txt
-   
    ```
-5. Certifique-se de que o Docker esteja em execução.
-6. Execute o Docker Compose para iniciar o ambiente de execução:
+
+5. Make sure Docker is running.
+6. Run Docker Compose to start the execution environment:
 
    ```
    $ docker-compose up -d
    ```
 
-## Uso
+## Usage
 
-Para utilizar o PyInvestAnalyser, siga estas etapas:
+To use PyInvestAnalyser, follow these steps:
 
-Importe a classe ExtractInfoFromStock do respectivo tipo de ativo que você deseja analisar (ações, fundos
-imobiliários e DBRs):
+Import the ExtractInfoFromStock class for the respective type of asset you want to analyze (stocks, real estate funds,
+and DBRs):
 
-Aqui esta um exemplo de como importar a classe ExtractInfoFromStock para obter informações sobre a ação B3SA3:
+Here is an example of how to import the ExtractInfoFromStock class to obtain information about the B3SA3 stock:
 
 ```python
 from src.services import ExtractInfoFromStock
@@ -79,11 +78,11 @@ print(stock)
 # Stock(name='B3SA3', company_nam...
 ```
 
-Além disso, dando contexto a um exemplo mais complexo, você pode executar um script em muilthread para obter informações
-de vários ativos ao mesmo tempo:
+Additionally, providing context to a more complex example, you can execute a multi-threaded script to obtain information
+about multiple assets at the same time:
 
-Neste caso, o script irá obter informações sobre as ações B3SA3, BBDC3, BBSE3 e BMGB4 e salvará os resultados em um
-arquivo CSV.
+In this case, the script will obtain information about the stocks B3SA3, BBDC3, BBSE3, and BMGB4 and save the results in
+a CSV file.
 
 ```python
 import concurrent.futures
@@ -122,33 +121,33 @@ with open('result_for_actives.csv', 'w', newline='', encoding="utf-8") as file:
 
     for active in result_actives:
         writer.writerow(active.__dict__.values())
- ```
+```
 
-## Contribuição
+## Contributing
 
-Se você deseja contribuir para o projeto PyInvestAnalyser, siga as etapas abaixo:
+If you want to contribute to the PyInvestAnalyser project, follow the steps below:
 
-1. Faça um fork do projeto
+1. Fork the project
 
-2. Crie uma nova branch (git checkout -b feature/nova-feature)
+2. Create a new branch (git checkout -b feature/new-feature)
 
-3. Faça suas alterações
+3. Make your changes
 
-4. Faça o commit de suas alterações (git commit -am 'Adicionar nova feature')
+4. Commit your changes (git commit -am 'Add new feature')
 
-5. Faça o push para a branch (git push origin feature/nova-feature)
+5. Push to the branch (git push origin feature/new-feature)
 
-6. Abra um Pull Request
+6. Open a Pull Request
 
-## Autores
+## Authors
 
 - [Erickson Lopes](<https://www.linkedin.com/in/ericksonlopes/>)
 
-## Licença
+## License
 
-Este projeto está licenciado sob a [MIT License](https://opensource.org/licenses/MIT).
+This project is licensed under the [MIT License](https://opensource.org/licenses/MIT).
 
-## Referências
+## References
 
 - [Python](https://www.python.org/)
 - [Selenium](https://www.selenium.dev/)
