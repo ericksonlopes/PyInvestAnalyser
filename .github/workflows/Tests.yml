@@ -17,6 +17,9 @@ jobs:
           browsers: chrome
           last-versions: 1
 
+      - name: is selenoid started?
+        run: curl http://localhost:4444/status
+
       - name: Checkout repository
         uses: actions/checkout@v3
 
