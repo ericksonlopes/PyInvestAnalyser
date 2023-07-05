@@ -1,36 +1,58 @@
 import concurrent.futures
 import csv
 
-from src.models import Stock
-from src.services import ExtractInfoFromStock
+from config import Logger
+from src.models import RealEstateFunds
+from src.services import ExtractInfoFromREF, ExtractInfoFromBDR, ExtractInfoFromStock
 
-actives = [
-    'B3SA3',
-    'BBDC3',
-    'BBSE3',
-    'BMGB4'
-]
 
-result_actives = []
+def generate_csv():
+    actives = [
+        'HGLG11',
+        'KNCR11',
+        'MXRF11',
+        'RBFF11',
+        'SNAG11',
+        'XPSF11',
+        "HSML11",
+        "VINO11",
+    ]
 
-with concurrent.futures.ThreadPoolExecutor() as executor:
-    futures = [executor.submit(ExtractInfoFromStock().get_info_active, active) for active in actives]
+    result_actives = []
 
-    for future in concurrent.futures.as_completed(futures):
-        try:
-            active = future.result()
+    logger = Logger().logger
 
-            if isinstance(active, str):
-                active = ExtractInfoFromStock().get_active_keys_indicators(active)
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        futures = [executor.submit(ExtractInfoFromREF().get_info_active, active) for active in actives]
 
-            result_actives.append(active)
+        for future in concurrent.futures.as_completed(futures):
 
-        except Exception as e:
-            print(f'Error1: {str(e)}')
+            try:
+                active = future.result()
 
-with open('result_for_actives.csv', 'w', newline='', encoding="utf-8") as file:
-    writer = csv.writer(file)
-    writer.writerow(Stock().get_meaning_of_fields().values())
+                if isinstance(active, str):
+                    active = ExtractInfoFromREF().get_active_keys_indicators(active)
 
-    for active in result_actives:
-        writer.writerow(active.__dict__.values())
+                result_actives.append(active)
+            except Exception as e:
+                logger.error(f"Error to get information for active {active.name}")
+                logger.error(e)
+
+    with open('result_for_actives.csv', 'w', newline='', encoding="utf-8") as file:
+        writer = csv.writer(file)
+        writer.writerow(RealEstateFunds().get_meaning_of_fields().values())
+
+        for active in result_actives:
+            writer.writerow(active.__dict__.values())
+
+
+def generate_single():
+    ExtractInfoFromREF().get_info_active('vigt11')
+    ExtractInfoFromStock().get_info_active('vale3')
+    ExtractInfoFromBDR().get_info_active('MSFT34')
+
+
+if __name__ == '__main__':
+    generate_csv()
+    # generate_single()
+    # adicionando mais logs e tratando area que pega os dados do site e distribui no objeto

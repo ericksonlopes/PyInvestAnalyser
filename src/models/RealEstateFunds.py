@@ -6,7 +6,7 @@ from src.models.Active import Active
 
 @dataclass
 class RealEstateFunds(Active):
-    company_name: str = None
+    company_name_ref: str = None
     cnpj: str = None
     target_audience: str = None
     mandate: str = None
@@ -27,7 +27,7 @@ class RealEstateFunds(Active):
         active_default = super().get_meaning_of_fields()
 
         ref = {
-            "company_name": "Razão Social",
+            "company_name_ref": "Razão Social",
             "cnpj": "CNPJ",
             "target_audience": "PÚBLICO - ALVO",
             "mandate": "MANDATO",
@@ -39,7 +39,7 @@ class RealEstateFunds(Active):
             "vacancy": "VACÂNCIA",
             "number_of_investors": "NUMERO DE COTISTAS",
             "issued_shares": "COTAS EMITIDAS",
-            "net_asset_value_per_share": "VAL.PATRIMONIAL P / COTA",
+            "net_asset_value_per_share": "VAL. PATRIMONIAL P/ COTA",
             "net_asset_value": "VALOR PATRIMONIAL",
             "last_yield": "ÚLTIMO RENDIMENTO"
         }

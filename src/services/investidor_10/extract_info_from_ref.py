@@ -18,12 +18,29 @@ class ExtractInfoFromREF(ExtractActiveInformation):
         return RealEstateFunds(name=active_name, type="ref")
 
     def get_info_active(self, active_name: str) -> RealEstateFunds:
-        ref = self.get_page_infos_for_active(active_name, "fiis")
-
         ret_ref = RealEstateFunds()
-        list_keys_ref = list(RealEstateFunds().__dict__.keys())
+        ret_ref.name = active_name
 
-        for num in range(len(list_keys_ref)):
-            ret_ref.__dict__[list_keys_ref[num]] = list(ref.values())[num]
+        try:
+            ref = self.get_page_infos_for_active(active_name, "fiis")
+
+            list_keys_ref = list(RealEstateFunds().__dict__.keys())
+
+            for key, value in ref.items():
+                if key in list_keys_ref:
+                    ret_ref.__dict__[key] = value
+
+                mean = ret_ref.get_meaning_of_fields()
+
+                if key in mean.values():
+                    key_mean = list(mean.keys())[list(mean.values()).index(key)]
+                    ret_ref.__dict__[key_mean] = value
+
+        except Exception as e:
+            self.logger.error(f"Error to get information for active {active_name}")
+            self.logger.error(e)
+
+        finally:
+            self.logger.info(f"Information for active {active_name} successfully obtained")
 
         return ret_ref

@@ -34,14 +34,19 @@ class ExtractActiveInformation(ABC, Logger):
     def get_indicators(self) -> dict:
         indicators = {}
 
-        table_indicators = self.soup.find('div', id='table-indicators').find_all("div", class_="cell")
+        try:
 
-        for cell in table_indicators:
-            indicator = cell.span.text.replace("\n", "")
+            table_indicators = self.soup.find('div', id='table-indicators').find_all("div", class_="cell")
 
-            value = self.get_value_cell(cell)
+            for cell in table_indicators:
+                indicator = cell.span.text.replace("\n", "")
 
-            indicators[indicator] = value
+                value = self.get_value_cell(cell)
+
+                indicators[indicator] = value
+
+        except Exception as error:
+            self.logger.error(f"Error to get indicators {error}")
 
         return indicators
 
@@ -109,5 +114,4 @@ class ExtractActiveInformation(ABC, Logger):
             return self.get_page_infos_for_active(active_name, active_type, time_for_loop + 1)
 
         driver.quit()
-        self.logger.info(f"Information for active {active_name} successfully obtained")
         return {**active.__dict__, **indicators}

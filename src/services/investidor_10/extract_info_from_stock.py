@@ -20,12 +20,31 @@ class ExtractInfoFromStock(ExtractActiveInformation):
         return grade_text
 
     def get_info_active(self, active_name) -> Stock:
-        stock = self.get_page_infos_for_active(active_name, "acoes")
-
         ret_stock = Stock()
-        list_keys_stock = list(Stock().__dict__.keys())
+        ret_stock.name = active_name
 
-        for num in range(len(list_keys_stock)):
-            ret_stock.__dict__[list_keys_stock[num]] = list(stock.values())[num]
+        try:
+            stock = self.get_page_infos_for_active(active_name, "acoes")
+
+            list_keys_ref = list(Stock().__dict__.keys())
+
+            for key, value in stock.items():
+                key = key.rstrip()
+
+                if key in list_keys_ref:
+                    ret_stock.__dict__[key] = value
+
+                mean = ret_stock.get_meaning_of_fields()
+
+                if key in mean.values():
+                    key_mean = list(mean.keys())[list(mean.values()).index(key)]
+                    ret_stock.__dict__[key_mean] = value
+
+        except Exception as e:
+            self.logger.error(f"Error to get information for active {active_name}")
+            self.logger.error(e)
+
+        finally:
+            self.logger.info(f"Information for active {active_name} successfully obtained")
 
         return ret_stock

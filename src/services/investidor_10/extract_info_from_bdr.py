@@ -18,12 +18,29 @@ class ExtractInfoFromBDR(ExtractActiveInformation):
         return BDR(name=active_name, type="bdrs")
 
     def get_info_active(self, active_name: str) -> BDR:
-        bdr = self.get_page_infos_for_active(active_name, "bdrs")
-
         ret_bdr = BDR()
-        list_bdr_keys = list(BDR().__dict__.keys())
+        ret_bdr.name = active_name
 
-        for num in range(len(list_bdr_keys)):
-            ret_bdr.__dict__[list_bdr_keys[num]] = list(bdr.values())[num]
+        try:
+            bdr = self.get_page_infos_for_active(active_name, "bdrs")
+            list_bdr_keys = list(BDR().__dict__.keys())
+
+            for key, value in bdr.items():
+                if key in list_bdr_keys:
+                    ret_bdr.__dict__[key] = value
+
+                mean = ret_bdr.get_meaning_of_fields()
+
+                if key in mean.values():
+                    key_mean = list(mean.keys())[list(mean.values()).index(key)]
+                    ret_bdr.__dict__[key_mean] = value
+
+            return ret_bdr
+        except Exception as e:
+            self.logger.error(f"Error to get information for active {active_name}")
+            self.logger.error(e)
+
+        finally:
+            self.logger.info(f"Information for active {active_name} successfully obtained")
 
         return ret_bdr

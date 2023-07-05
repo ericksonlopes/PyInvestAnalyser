@@ -20,7 +20,7 @@ class Active:
             'company_name': 'Nome da Empresa',
             'type': 'Tipo',
             'quotation': 'Cotação',
-            'price_to_book_ratio': 'P/VP - Preço sobre o Valor Patrimonial',
+            'price_to_book_ratio': 'P/VP',
             'daily_liquidity': 'Liquidez Diária',
             'dividend_yield': 'Dividend Yield',
             'appreciation': 'Valorização',
