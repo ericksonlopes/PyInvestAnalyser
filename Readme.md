@@ -1,6 +1,6 @@
 # PyInvestAnalyser
 
-![Star](https://img.shields.io/github/stars/ericksonlopes/PyInvestAnalyser?style=social) [![LinkedIn](https://img.shields.io/badge/LinkedIn-Erickson_Lopes%20-blue)](https://www.linkedin.com/in/ericksonlopes/) ![wakatime](https://wakatime.com/badge/user/541772df-f19f-4145-a40c-cf7ffac73ea5/project/5bfa867f-031e-4498-bdf3-a918ec816f88.svg) [![Test](https://github.com/ericksonlopes/PyInvestAnalyser/actions/workflows/Tests.yml/badge.svg?branch=main)](https://github.com/ericksonlopes/PyInvestAnalyser/actions/workflows/Tests.yml)
+![Star](https://img.shields.io/github/stars/ericksonlopes/PyInvestAnalyser?style=social) [![LinkedIn](https://img.shields.io/badge/LinkedIn-Erickson_Lopes%20-blue)](https://www.linkedin.com/in/ericksonlopes/) ![wakatime](https://wakatime.com/badge/user/541772df-f19f-4145-a40c-cf7ffac73ea5/project/5bfa867f-031e-4498-bdf3-a918ec816f88.svg) [![Test](https://github.com/ericksonlopes/PyInvestAnalyser/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/ericksonlopes/PyInvestAnalyser/actions/workflows/tests.yml)
 
 ![Python](https://img.shields.io/badge/-Python-3776AB?&logo=Python&logoColor=FFFFFF)
 ![Docker](https://img.shields.io/badge/-Docker-2496ED?&logo=Docker&logoColor=FFFFFF)
