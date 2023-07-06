@@ -9,13 +9,14 @@ from src.services import ExtractInfoFromREF, ExtractInfoFromBDR, ExtractInfoFrom
 def generate_csv():
     actives = [
         'HGLG11',
+        'HSML11',
         'KNCR11',
         'MXRF11',
         'RBFF11',
         'SNAG11',
-        'XPSF11',
-        "HSML11",
+        "VGIR11",
         "VINO11",
+        "XPSF11",
     ]
 
     result_actives = []
