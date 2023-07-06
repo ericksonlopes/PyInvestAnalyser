@@ -40,17 +40,17 @@ Follow the steps below to install the project:
    $ cd PyInvestAnalyser
    ```
 
-3. Create and activate a virtual environment with Pyenv:
+3. Create and Install project dependencies:
 
    ```
    $ pip install pipenv
    $ pipenv install
    ```
 
-4. Install project dependencies:
+4. activate a virtual environment with Pyenv:
 
    ```
-   $ pip install -r requirements.txt
+   $ pipenv shell
    ```
 
 5. Make sure Docker is running.
