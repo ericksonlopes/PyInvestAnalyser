@@ -8,4 +8,4 @@ RUN pip install --upgrade pipenv && pipenv install --system
 
 ENV DOCKER=True
 
-CMD ["python3", "run.py"]
+CMD ["streamlit", "run", "app.py", "--server.enableCORS", "false"]

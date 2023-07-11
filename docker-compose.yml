@@ -35,8 +35,10 @@ services:
     depends_on:
       - selenoid-ui
 
-  app:
+  streamlit:
     build: .
     network_mode: bridge
+    ports:
+      - 8501:8501
     depends_on:
       - selenoid-chrome
