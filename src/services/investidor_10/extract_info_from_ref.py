@@ -1,5 +1,6 @@
 from bs4 import Tag
 
+from src.exceptions import IndicatorNotFound
 from src.models import RealEstateFunds
 from src.services.investidor_10.extract_info_abstract import ExtractActiveInformation
 
@@ -16,6 +17,28 @@ class ExtractInfoFromREF(ExtractActiveInformation):
 
     def get_active_keys_indicators(self, active_name) -> RealEstateFunds:
         return RealEstateFunds(name=active_name, type="ref")
+
+    def get_indicators(self) -> dict:
+        indicators = {}
+
+        try:
+
+            table_indicators = self.soup.find('div', id='table-indicators').find_all("div", class_="cell")
+
+            for cell in table_indicators:
+                indicator = cell.span.text.replace("\n", "")
+
+                value = self.get_value_cell(cell)
+
+                indicators[indicator] = value
+
+        except Exception as error:
+            self.logger.error(f"Error to get indicators {error}")
+
+        if indicators["SEGMENTO"] is None:
+            raise IndicatorNotFound("segment not found")
+
+        return indicators
 
     def get_info_active(self, active_name: str) -> RealEstateFunds:
         ret_ref = RealEstateFunds()

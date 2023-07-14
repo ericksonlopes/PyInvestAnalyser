@@ -1,7 +1,7 @@
-from src.models.Active import Active
-from src.models.BDR import BDR
-from src.models.RealEstateFunds import RealEstateFunds
-from src.models.Stock import Stock
+from src.models.investidor10.Active import Active
+from src.models.investidor10.BDR import BDR
+from src.models.investidor10.RealEstateFunds import RealEstateFunds
+from src.models.investidor10.Stock import Stock
 
 __all__ = [
     'Active',

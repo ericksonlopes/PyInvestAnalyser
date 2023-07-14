@@ -31,24 +31,9 @@ class ExtractActiveInformation(ABC, Logger):
     def get_grade(self):
         pass
 
+    @abstractmethod
     def get_indicators(self) -> dict:
-        indicators = {}
-
-        try:
-
-            table_indicators = self.soup.find('div', id='table-indicators').find_all("div", class_="cell")
-
-            for cell in table_indicators:
-                indicator = cell.span.text.replace("\n", "")
-
-                value = self.get_value_cell(cell)
-
-                indicators[indicator] = value
-
-        except Exception as error:
-            self.logger.error(f"Error to get indicators {error}")
-
-        return indicators
+        pass
 
     def get_page_infos_for_active(self, active_name, active_type, time_for_loop=0) -> dict:
         self.logger.info(f"Getting information {active_name}... {time_for_loop if time_for_loop > 0 else ''}")
@@ -108,7 +93,7 @@ class ExtractActiveInformation(ABC, Logger):
             self.logger.error(f"Error to get information for active {active_name} {error}")
             return self.get_page_infos_for_active(active_name, active_type, time_for_loop + 1)
 
-        if "-" in active.quotation:
+        if "-" in active.quotation or active.quotation is None:
             driver.quit()
             self.logger.warning(f"Error to get information for active {active_name} '-' quotation is not available")
             return self.get_page_infos_for_active(active_name, active_type, time_for_loop + 1)

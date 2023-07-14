@@ -19,6 +19,25 @@ class ExtractInfoFromStock(ExtractActiveInformation):
         grade_text = grade.text.replace("\n", "").replace(" ", "").replace("Nota", "").replace(":", "")
         return grade_text
 
+    def get_indicators(self) -> dict:
+        indicators = {}
+
+        try:
+
+            table_indicators = self.soup.find('div', id='table-indicators').find_all("div", class_="cell")
+
+            for cell in table_indicators:
+                indicator = cell.span.text.replace("\n", "")
+
+                value = self.get_value_cell(cell)
+
+                indicators[indicator] = value
+
+        except Exception as error:
+            self.logger.error(f"Error to get indicators {error}")
+
+        return indicators
+
     def get_info_active(self, active_name) -> Stock:
         ret_stock = Stock()
         ret_stock.name = active_name

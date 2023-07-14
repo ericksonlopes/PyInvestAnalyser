@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from types import MappingProxyType
 
-from src.models.Active import Active
+from src.models.investidor10.Active import Active
 
 
 @dataclass
