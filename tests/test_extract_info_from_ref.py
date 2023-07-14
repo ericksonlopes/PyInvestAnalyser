@@ -1,10 +1,13 @@
 import concurrent.futures
 
+import pytest
+
 from src.services import ExtractInfoFromREF
 from tests.test_base import BaseTestClass
 
 
 class TestExtractInfoREF(BaseTestClass):
+    @pytest.mark.ref
     def test_get_info_active(self):
         result_actives = []
 

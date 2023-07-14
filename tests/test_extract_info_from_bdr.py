@@ -1,10 +1,14 @@
 import concurrent.futures
 
+import pytest
+
 from src.services import ExtractInfoFromBDR
 from tests.test_base import BaseTestClass
 
 
 class TestExtractInfoBDR(BaseTestClass):
+
+    @pytest.mark.bdr
     def test_get_info_active(self):
         result_actives = []
 

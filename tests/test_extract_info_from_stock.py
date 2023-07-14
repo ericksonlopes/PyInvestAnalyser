@@ -1,10 +1,13 @@
 import concurrent.futures
 
+import pytest
+
 from src.services import ExtractInfoFromStock
 from tests.test_base import BaseTestClass
 
 
 class TestExtractInfoStock(BaseTestClass):
+    @pytest.mark.stock
     def test_get_info_active(self):
         result_actives = []
 
