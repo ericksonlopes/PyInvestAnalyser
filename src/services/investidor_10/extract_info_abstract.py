@@ -1,12 +1,9 @@
 from abc import ABC, abstractmethod
 
 from bs4 import BeautifulSoup, Tag
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.wait import WebDriverWait
-
+import requests
 from config import Logger
 from src.exceptions import ActiveSearchError
-from src.helpers import get_webdriver
 from src.models import Active
 
 
@@ -38,7 +35,6 @@ class ExtractActiveInformation(ABC, Logger):
     def get_page_infos_for_active(self, active_name, active_type, time_for_loop=0) -> dict:
         self.logger.info(f"Getting information {active_name}... {time_for_loop if time_for_loop > 0 else ''}")
 
-        driver = get_webdriver()
         active = Active(name=active_name, type=active_type)
 
         try:
@@ -47,17 +43,9 @@ class ExtractActiveInformation(ABC, Logger):
 
             url = f"https://investidor10.com.br/{active_type}/{active_name}/"
 
-            driver.get(url)
+            req = requests.get(url, headers={'User-Agent': 'Mozilla/5.0'}, timeout=5, verify=False)
 
-            try:
-                wait = WebDriverWait(driver, 3)
-                alert = wait.until(EC.alert_is_present())
-                alert.accept()
-            except Exception:
-                pass
-
-            html = driver.page_source
-            soup = BeautifulSoup(html, 'html.parser')
+            soup = BeautifulSoup(req.text, "html.parser")
             self.soup = soup
 
             company_name = soup.find(class_='name-ticker').find("h2")
@@ -84,19 +72,15 @@ class ExtractActiveInformation(ABC, Logger):
             indicators = self.get_indicators()
 
         except ActiveSearchError as error:
-            driver.quit()
             self.logger.error(f"Maximum attempts to get information for active {active_name} {error}")
             return active_name
 
         except Exception as error:
-            driver.quit()
             self.logger.error(f"Error to get information for active {active_name} {error}")
             return self.get_page_infos_for_active(active_name, active_type, time_for_loop + 1)
 
         if "-" in active.quotation or active.quotation is None:
-            driver.quit()
             self.logger.warning(f"Error to get information for active {active_name} '-' quotation is not available")
             return self.get_page_infos_for_active(active_name, active_type, time_for_loop + 1)
 
-        driver.quit()
         return {**active.__dict__, **indicators}
