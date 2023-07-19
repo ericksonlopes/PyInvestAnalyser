@@ -1,7 +1,9 @@
 from abc import ABC, abstractmethod
 
-from bs4 import BeautifulSoup, Tag
 import requests
+import urllib3
+from bs4 import BeautifulSoup, Tag
+
 from config import Logger
 from src.exceptions import ActiveSearchError
 from src.models import Active
@@ -10,6 +12,7 @@ from src.models import Active
 class ExtractActiveInformation(ABC, Logger):
     def __init__(self):
         super().__init__()
+        urllib3.disable_warnings()
         self.soup = None
 
     @abstractmethod
@@ -64,7 +67,7 @@ class ExtractActiveInformation(ABC, Logger):
             daily_liquidity = daily_liquidity.text.replace("R$ ", "").replace(" K", "")
             active.daily_liquidity = daily_liquidity
 
-            appreciation = soup.find('div', class_='_card dy').find("div", class_="_card-body").find("span")
+            appreciation = soup.findAll('div', class_='_card dy')[-1].find("div", class_="_card-body").find("span")
             active.appreciation = appreciation.text
 
             active.grade = self.get_grade()

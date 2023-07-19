@@ -3,7 +3,7 @@ from pprint import pprint
 
 
 def generate_single():
-    pprint(ExtractInfoFromREF().get_info_active('hglg11'))
+    pprint(ExtractInfoFromREF().get_info_active('tord11'))
     pprint(ExtractInfoFromStock().get_info_active('vale3'))
     pprint(ExtractInfoFromBDR().get_info_active('MSFT34'))
 

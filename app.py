@@ -36,6 +36,7 @@ def generate_data(actives):
 
 st.set_page_config(page_title='PyInvestAnalyser',
                    page_icon='📊',
+                     layout='wide',
                    initial_sidebar_state='auto')
 st.set_option('deprecation.showPyplotGlobalUse', False)
 
@@ -56,8 +57,8 @@ content_without_first_line = '\n'.join(content_lines[1:])
 
 df = pd.read_csv(io.StringIO(content_without_first_line), sep=';')
 
-with st.expander("Visualizar dados brutos"):
-    st.dataframe(df)
+# with st.expander("Visualizar dados brutos"):
+#     st.dataframe(df)
 
 df = df[['TIPO DE INVESTIMENTO', 'DESCRIÇÃO', 'VALOR BRUTO', "QUANTIDADE"]]
 
@@ -68,42 +69,90 @@ with st.spinner('Loading...'):
 
 df_infos.columns = RealEstateFunds.get_meaning_of_fields().values()
 
-with st.expander("Visualizar dados brutos"):
-    st.dataframe(df_infos)
+# with st.expander("Visualizar dados brutos"):
+#     st.dataframe(df_infos)
 
-df_infos = df_infos[["Nome", "Cotação", "P/VP", "VAL. PATRIMONIAL P/ COTA", 'SEGMENTO']]
+df_infos = df_infos[["Nome", "Cotação", "P/VP", "VAL. PATRIMONIAL P/ COTA", 'SEGMENTO', "Valorização"]]
 
+fiis['VALORIZAÇÃO'] = fiis["DESCRIÇÃO"].map(df_infos.set_index("Nome")["Valorização"])
 fiis["SEGMENTO"] = fiis["DESCRIÇÃO"].map(df_infos.set_index("Nome")["SEGMENTO"])
 fiis["COTAÇÃO"] = fiis["DESCRIÇÃO"].map(df_infos.set_index("Nome")["Cotação"])
 fiis["P/VP"] = fiis["DESCRIÇÃO"].map(df_infos.set_index("Nome")["P/VP"])
 
+fiis["P/VP"] = fiis["P/VP"].str.replace(',', '.')
 fiis['VALOR BRUTO'] = fiis['VALOR BRUTO'].str.replace('.', '')
 fiis['VALOR BRUTO'] = fiis['VALOR BRUTO'].str.replace('R$ ', '')
 fiis['VALOR BRUTO'] = fiis['VALOR BRUTO'].str.replace(',', '.')
-fiis['VALOR BRUTO'] = fiis['VALOR BRUTO'].astype(float)
+
+fiis["VALORIZAÇÃO"] = fiis["VALORIZAÇÃO"].str.replace(',', '.')
+fiis["VALORIZAÇÃO"] = fiis["VALORIZAÇÃO"].str.replace('%', '')
 
 fiis['QUANTIDADE'] = fiis['QUANTIDADE'].str.replace(',0', '')
-fiis['QUANTIDADE'] = fiis['QUANTIDADE'].astype(int)
 
 fiis.drop(columns=['TIPO DE INVESTIMENTO'], inplace=True)
 
-st.dataframe(fiis, use_container_width=True)
+fiis['VALOR BRUTO'] = fiis['VALOR BRUTO'].astype(float).round(2)
+fiis["VALORIZAÇÃO"] = fiis["VALORIZAÇÃO"].astype(float).round(2)
+fiis['QUANTIDADE'] = fiis['QUANTIDADE'].astype(int).round(2)
+
+
+def bigger_than_pvp(value):
+    if float(value) < 1.0:
+        return 'background-color: green'
+
+    if float(value) > 1.0:
+        return 'background-color: Firebrick'
+
+
+def bigger_than_val(value):
+    if float(value) > 0:
+        return 'background-color: green'
+
+    if float(value) < 0:
+        return 'background-color: Firebrick'
+
+
+styled_df = fiis.style
+styled_df = styled_df.format({
+    'VALOR BRUTO': 'R${:,.2f}',
+    'VALORIZAÇÃO': '{:.2f}%'})
+
+styled_df = styled_df.applymap(bigger_than_pvp, subset=['P/VP'])
+styled_df = styled_df.applymap(bigger_than_val, subset=['VALORIZAÇÃO'])
+
+st.dataframe(styled_df, use_container_width=True)
 
 st.title('Gráficos Por:')
 
-nome, segmento = st.tabs(['Ativos', 'Segmentos'])
+col1, col2, col3 = st.columns(3)
 
-with nome:
-    fig1, ax1 = plt.subplots()
-    ax1.pie(fiis['VALOR BRUTO'], labels=fiis['DESCRIÇÃO'], autopct='%1.1f%%')
-    ax1.axis('equal')
-    st.pyplot(fig1)
+with col1:
+    nome, segmento = st.tabs(['Ativos', 'Segmentos'])
 
-with segmento:
-    segmentos = fiis.groupby('SEGMENTO').sum().reset_index()
-    segmentos.sort_values(by=['VALOR BRUTO'], inplace=True, ascending=False)
+    with nome:
+        fig1, ax1 = plt.subplots()
+        ax1.pie(fiis['VALOR BRUTO'], labels=fiis['DESCRIÇÃO'], autopct='%1.1f%%')
+        ax1.axis('equal')
+        st.pyplot(fig1)
 
-    fig2, ax2 = plt.subplots()
-    ax2.pie(segmentos["VALOR BRUTO"], labels=segmentos["SEGMENTO"], autopct='%1.1f%%', startangle=90)
-    ax2.axis('equal')
-    st.pyplot(fig2)
+    with segmento:
+        fiis['VALOR BRUTO'] = fiis['VALOR BRUTO'].astype(float)
+        fiis["VALORIZAÇÃO"] = fiis["VALORIZAÇÃO"].astype(float)
+        fiis['QUANTIDADE'] = fiis['QUANTIDADE'].astype(int)
+
+        segmentos = fiis.groupby('SEGMENTO').sum().reset_index()
+        segmentos.sort_values(by=['VALOR BRUTO'], inplace=True, ascending=False)
+
+        fig2, ax2 = plt.subplots()
+        ax2.pie(segmentos["VALOR BRUTO"], labels=segmentos["SEGMENTO"], autopct='%1.1f%%', startangle=90)
+        ax2.axis('equal')
+        st.pyplot(fig2)
+
+with col2:
+   st.header("A dog")
+   st.image("https://static.streamlit.io/examples/dog.jpg")
+
+with col3:
+   st.header("An owl")
+   st.image("https://static.streamlit.io/examples/owl.jpg")
+
