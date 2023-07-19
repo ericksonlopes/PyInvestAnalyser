@@ -36,7 +36,7 @@ def generate_data(actives):
 
 st.set_page_config(page_title='PyInvestAnalyser',
                    page_icon='📊',
-                     layout='wide',
+                   layout='wide',
                    initial_sidebar_state='auto')
 st.set_option('deprecation.showPyplotGlobalUse', False)
 
@@ -83,17 +83,20 @@ fiis["P/VP"] = fiis["P/VP"].str.replace(',', '.')
 fiis['VALOR BRUTO'] = fiis['VALOR BRUTO'].str.replace('.', '')
 fiis['VALOR BRUTO'] = fiis['VALOR BRUTO'].str.replace('R$ ', '')
 fiis['VALOR BRUTO'] = fiis['VALOR BRUTO'].str.replace(',', '.')
+fiis['VALOR BRUTO'] = fiis['VALOR BRUTO'].astype(float)
+
+fiis["COTAÇÃO"] = fiis["COTAÇÃO"].str.replace(',', '.')
+fiis["COTAÇÃO"] = fiis["COTAÇÃO"].str.replace('R$ ', '')
+fiis['COTAÇÃO'] = fiis['COTAÇÃO'].astype(float)
 
 fiis["VALORIZAÇÃO"] = fiis["VALORIZAÇÃO"].str.replace(',', '.')
 fiis["VALORIZAÇÃO"] = fiis["VALORIZAÇÃO"].str.replace('%', '')
+fiis["VALORIZAÇÃO"] = fiis["VALORIZAÇÃO"].astype(float)
 
 fiis['QUANTIDADE'] = fiis['QUANTIDADE'].str.replace(',0', '')
+fiis['QUANTIDADE'] = fiis['QUANTIDADE'].astype(int)
 
 fiis.drop(columns=['TIPO DE INVESTIMENTO'], inplace=True)
-
-fiis['VALOR BRUTO'] = fiis['VALOR BRUTO'].astype(float).round(2)
-fiis["VALORIZAÇÃO"] = fiis["VALORIZAÇÃO"].astype(float).round(2)
-fiis['QUANTIDADE'] = fiis['QUANTIDADE'].astype(int).round(2)
 
 
 def bigger_than_pvp(value):
@@ -115,7 +118,8 @@ def bigger_than_val(value):
 styled_df = fiis.style
 styled_df = styled_df.format({
     'VALOR BRUTO': 'R${:,.2f}',
-    'VALORIZAÇÃO': '{:.2f}%'})
+    'VALORIZAÇÃO': '{:.2f}%',
+    'COTAÇÃO': 'R$ {:,.2f}'})
 
 styled_df = styled_df.applymap(bigger_than_pvp, subset=['P/VP'])
 styled_df = styled_df.applymap(bigger_than_val, subset=['VALORIZAÇÃO'])
@@ -136,10 +140,6 @@ with col1:
         st.pyplot(fig1)
 
     with segmento:
-        fiis['VALOR BRUTO'] = fiis['VALOR BRUTO'].astype(float)
-        fiis["VALORIZAÇÃO"] = fiis["VALORIZAÇÃO"].astype(float)
-        fiis['QUANTIDADE'] = fiis['QUANTIDADE'].astype(int)
-
         segmentos = fiis.groupby('SEGMENTO').sum().reset_index()
         segmentos.sort_values(by=['VALOR BRUTO'], inplace=True, ascending=False)
 
@@ -149,10 +149,7 @@ with col1:
         st.pyplot(fig2)
 
 with col2:
-   st.header("A dog")
-   st.image("https://static.streamlit.io/examples/dog.jpg")
+    pass
 
 with col3:
-   st.header("An owl")
-   st.image("https://static.streamlit.io/examples/owl.jpg")
-
+    pass
