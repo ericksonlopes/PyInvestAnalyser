@@ -34,10 +34,8 @@ def generate_data(actives):
     return pd.DataFrame(result_actives)
 
 
-st.set_page_config(page_title='PyInvestAnalyser',
-                   page_icon='📊',
-                   layout='wide',
-                   initial_sidebar_state='auto')
+st.set_page_config(page_title='PyInvestAnalyser', page_icon='📊', layout='wide')
+
 st.set_option('deprecation.showPyplotGlobalUse', False)
 
 st.title('PyInvestAnalyser')
@@ -130,26 +128,26 @@ st.title('Gráficos Por:')
 
 col1, col2, col3 = st.columns(3)
 
+# Tamanho fixo para as figuras
+fig_width = 300
+fig_height = 300
+
 with col1:
-    nome, segmento = st.tabs(['Ativos', 'Segmentos'])
-
-    with nome:
-        fig1, ax1 = plt.subplots()
-        ax1.pie(fiis['VALOR BRUTO'], labels=fiis['DESCRIÇÃO'], autopct='%1.1f%%')
-        ax1.axis('equal')
-        st.pyplot(fig1)
-
-    with segmento:
-        segmentos = fiis.groupby('SEGMENTO').sum().reset_index()
-        segmentos.sort_values(by=['VALOR BRUTO'], inplace=True, ascending=False)
-
-        fig2, ax2 = plt.subplots()
-        ax2.pie(segmentos["VALOR BRUTO"], labels=segmentos["SEGMENTO"], autopct='%1.1f%%', startangle=90)
-        ax2.axis('equal')
-        st.pyplot(fig2)
+    fig1, ax1 = plt.subplots(figsize=(fig_width / 100, fig_height / 100))
+    ax1.pie(fiis['VALOR BRUTO'], labels=fiis['DESCRIÇÃO'], autopct='%1.1f%%')
+    ax1.axis('equal')
+    st.pyplot(fig1)
 
 with col2:
-    pass
+    segmentos = fiis.groupby('SEGMENTO').sum().reset_index()
+    segmentos.sort_values(by=['VALOR BRUTO'], inplace=True, ascending=False)
+
+    fig2, ax2 = plt.subplots(figsize=(fig_width / 100, fig_height / 60.5))
+    ax2.pie(segmentos["VALOR BRUTO"], labels=segmentos["SEGMENTO"], autopct='%1.1f%%', startangle=90)
+    ax2.axis('equal')
+    st.pyplot(fig2)
+
 
 with col3:
-    pass
+    seg_valor = fiis.groupby('SEGMENTO').sum().reset_index().sort_values(by=['VALOR BRUTO'], ascending=False)
+    st.dataframe(seg_valor[["SEGMENTO", "VALOR BRUTO"]], use_container_width=True)

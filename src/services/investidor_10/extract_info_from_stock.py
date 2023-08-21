@@ -9,15 +9,24 @@ class ExtractInfoFromStock(ExtractActiveInformation):
         super().__init__()
 
     def get_value_cell(self, cell: Tag):
-        return cell.div.text.replace("\n", "")
+        try:
+            return cell.div.text.replace("\n", "")
+        except Exception as error:
+            self.logger.error(f"Error to get value cell {error}")
 
     def get_active_keys_indicators(self, active_name) -> Stock:
-        return Stock(name=active_name, type="acoes")
+        try:
+            return Stock(name=active_name, type="acoes")
+        except Exception as error:
+            self.logger.error(f"Error to get active keys indicators {error}")
 
     def get_grade(self):
-        grade = self.soup.find('div', id="checklist").find('div', class_='rating')
-        grade_text = grade.text.replace("\n", "").replace(" ", "").replace("Nota", "").replace(":", "")
-        return grade_text
+        try:
+            grade = self.soup.find('div', id="checklist").find('div', class_='rating')
+            grade_text = grade.text.replace("\n", "").replace(" ", "").replace("Nota", "").replace(":", "")
+            return grade_text
+        except Exception as error:
+            self.logger.error(f"Error to get grade {error}")
 
     def get_indicators(self) -> dict:
         indicators = {}
