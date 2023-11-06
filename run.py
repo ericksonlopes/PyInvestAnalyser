@@ -1,6 +1,6 @@
 from pprint import pprint
 
-from src.services import ExtractInfoFromREF, ExtractInfoFromBDR, ExtractInfoFromStock
+from py_invest_analyser.services import ExtractInfoFromREF, ExtractInfoFromBDR, ExtractInfoFromStock
 
 
 def generate_single():

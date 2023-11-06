@@ -2,7 +2,7 @@ import concurrent.futures
 
 import pytest
 
-from src.services import ExtractInfoFromREF
+from py_invest_analyser.services import ExtractInfoFromREF
 from tests.test_base import BaseTestClass
 
 

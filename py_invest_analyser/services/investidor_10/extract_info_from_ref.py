@@ -1,11 +1,15 @@
 from bs4 import Tag
 
-from src.exceptions import IndicatorNotFound
-from src.models import RealEstateFunds
-from src.services.investidor_10.extract_info_abstract import ExtractActiveInformation
+from py_invest_analyser.exceptions import IndicatorNotFound
+from py_invest_analyser.models import RealEstateFunds
+from py_invest_analyser.services.investidor_10.extract_info_abstract import ExtractActiveInformation
 
 
 class ExtractInfoFromREF(ExtractActiveInformation):
+    def get_appreciation(self, soup) -> str:
+        appreciation = soup.findAll('div', class_='_card dy')[-1].find("div", class_="_card-body").find("span")
+        return appreciation.text
+
     def __init__(self):
         super().__init__()
 

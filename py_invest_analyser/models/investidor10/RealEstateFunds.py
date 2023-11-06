@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from types import MappingProxyType
 
-from src.models.investidor10.Active import Active
+from py_invest_analyser.models.investidor10.Active import Active
 
 
 @dataclass

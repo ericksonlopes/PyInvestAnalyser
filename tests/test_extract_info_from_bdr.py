@@ -2,7 +2,7 @@ import concurrent.futures
 
 import pytest
 
-from src.services import ExtractInfoFromBDR
+from py_invest_analyser.services import ExtractInfoFromBDR
 from tests.test_base import BaseTestClass
 
 

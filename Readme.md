@@ -70,7 +70,7 @@ and DBRs):
 Here is an example of how to import the ExtractInfoFromStock class to obtain information about the B3SA3 stock:
 
 ```python
-from src.services import ExtractInfoFromStock
+from py_invest_analyser.services import ExtractInfoFromStock
 
 stock = ExtractInfoFromStock().get_info_active('B3SA3')
 
@@ -88,8 +88,8 @@ a CSV file.
 import concurrent.futures
 import csv
 
-from src.models import Stock
-from src.services import ExtractInfoFromStock
+from py_invest_analyser.models import Stock
+from py_invest_analyser.services import ExtractInfoFromStock
 
 actives = [
     'B3SA3',

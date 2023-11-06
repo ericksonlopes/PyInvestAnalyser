@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from types import MappingProxyType
 
-from src.models.investidor10.Active import Active
+from py_invest_analyser.models.investidor10.Active import Active
 
 
 @dataclass
@@ -44,8 +44,6 @@ class Stock(Active):
 
         stock = {
             'p_l': 'P/L',
-            'p_vp': 'P/VP',
-            'dividend_yield_stock': 'DIVIDEND YIELD',
             'payout': 'PAYOUT',
             'net_margin': 'MARGEM LÍQUIDA',
             'gross_margin': 'MARGEM BRUTA',

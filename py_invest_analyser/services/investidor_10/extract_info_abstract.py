@@ -5,8 +5,8 @@ import urllib3
 from bs4 import BeautifulSoup, Tag
 
 from config import Logger
-from src.exceptions import ActiveSearchError
-from src.models import Active
+from py_invest_analyser.exceptions import ActiveSearchError
+from py_invest_analyser.models import Active
 
 
 class ExtractActiveInformation(ABC, Logger):
@@ -35,7 +35,11 @@ class ExtractActiveInformation(ABC, Logger):
     def get_indicators(self) -> dict:
         pass
 
-    def get_page_infos_for_active(self, active_name, active_type, time_for_loop=0) -> dict:
+    @abstractmethod
+    def get_appreciation(self, soup) -> str:
+        pass
+
+    def get_page_infos_for_active(self, active_name, active_type, time_for_loop=0) -> dict or str:
         self.logger.info(f"Getting information {active_name}... {time_for_loop if time_for_loop > 0 else ''}")
 
         active = Active(name=active_name, type=active_type)
@@ -67,8 +71,7 @@ class ExtractActiveInformation(ABC, Logger):
             daily_liquidity = daily_liquidity.text.replace("R$ ", "").replace(" K", "")
             active.daily_liquidity = daily_liquidity
 
-            appreciation = soup.findAll('div', class_='_card dy')[-1].find("div", class_="_card-body").find("span")
-            active.appreciation = appreciation.text
+            active.appreciation = self.get_appreciation(soup)
 
             active.grade = self.get_grade()
 

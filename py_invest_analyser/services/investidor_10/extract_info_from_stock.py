@@ -1,12 +1,17 @@
 from bs4 import Tag
 
-from src.models import Stock
-from src.services.investidor_10.extract_info_abstract import ExtractActiveInformation
+from py_invest_analyser.models import Stock
+from py_invest_analyser.services.investidor_10.extract_info_abstract import ExtractActiveInformation
 
 
 class ExtractInfoFromStock(ExtractActiveInformation):
+
     def __init__(self):
         super().__init__()
+
+    def get_appreciation(self, soup) -> str:
+        appreciation = soup.find('div', class_='_card pl').find("div", class_="_card-body").find("span")
+        return appreciation.text
 
     def get_value_cell(self, cell: Tag):
         try:
