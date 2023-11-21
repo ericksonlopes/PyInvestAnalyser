@@ -136,7 +136,7 @@ fiis['ULT. RENDIMENTO'] = fiis['ULT. RENDIMENTO'].astype(float)
 fiis.drop(columns=['TIPO DE INVESTIMENTO'], inplace=True)
 
 # Metrics
-col1, col2, col3, col4, col5, col6 = st.columns(6)
+col1, col2, col3, col4, col5, col6, col7 = st.columns(7)
 
 with col1:
     st.metric(label="Total de Investimento", value=f"R$ {fiis['VALOR BRUTO'].sum():,.2f}")
@@ -146,7 +146,8 @@ with col2:
     st.metric(label="Total de Rendimento(último mês)", value=f"R$ {total_rendimento.sum():,.2f}")
 
 with col3:
-    st.metric(label="Total de Ativos", value=f"{len(fiis)}")
+    porcentagem_mes = (total_rendimento.sum() / fiis['VALOR BRUTO'].sum()) * 100
+    st.metric(label=f"Rendimento Mensal(%)", value=f"{porcentagem_mes:,.2f}%")
 
 with col4:
     maior = fiis['VALOR BRUTO'].values.max()
@@ -155,12 +156,15 @@ with col4:
     st.metric(label=f"Maior posição ({nome})", value=f"R$ {maior:,.2f}")
 
 with col5:
-    porcentagem_mes = (total_rendimento.sum() / fiis['VALOR BRUTO'].sum()) * 100
-    st.metric(label=f"Rendimento Mensal(%)", value=f"{porcentagem_mes:,.2f}%")
+    media_dividend_yield = fiis['DIVIDEND YIELD'].mean()
+    st.metric(label=f"Dividend Yield Médio (12M)", value=f"{media_dividend_yield:,.2f}%")
 
 with col6:
     media_valorizacao = fiis['VALORIZAÇÃO'].mean()
-    st.metric(label=f"Valorização Média(%)", value=f"{media_valorizacao:,.2f}%")
+    st.metric(label=f"Valorização Média (12M)", value=f"{media_valorizacao:,.2f}%")
+
+with col7:
+    st.metric(label="Total de Ativos", value=f"{len(fiis)}")
 
 
 def bigger_than_pvp(value):
