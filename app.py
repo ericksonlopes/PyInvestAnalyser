@@ -97,8 +97,10 @@ with st.expander("Visualizar dados brutos"):
     st.dataframe(df_infos_fiis)
 
 df_infos_fiis = df_infos_fiis[
-    ["Nome", "Cotação", "Dividend Yield", "P/VP", "VAL. PATRIMONIAL P/ COTA", 'SEGMENTO', "Valorização"]]
+    ["Nome", "Cotação", "Dividend Yield", "P/VP", "VAL. PATRIMONIAL P/ COTA", 'SEGMENTO', "Valorização",
+     "ÚLTIMO RENDIMENTO"]]
 
+fiis["ULT. RENDIMENTO"] = fiis["DESCRIÇÃO"].map(df_infos_fiis.set_index("Nome")["ÚLTIMO RENDIMENTO"])
 fiis['VALORIZAÇÃO'] = fiis["DESCRIÇÃO"].map(df_infos_fiis.set_index("Nome")["Valorização"])
 fiis["SEGMENTO"] = fiis["DESCRIÇÃO"].map(df_infos_fiis.set_index("Nome")["SEGMENTO"])
 fiis["COTAÇÃO"] = fiis["DESCRIÇÃO"].map(df_infos_fiis.set_index("Nome")["Cotação"])
@@ -126,7 +128,39 @@ fiis["DIVIDEND YIELD"] = fiis["DIVIDEND YIELD"].str.replace(',', '.')
 fiis["DIVIDEND YIELD"] = fiis["DIVIDEND YIELD"].str.replace('%', '')
 fiis["DIVIDEND YIELD"] = fiis["DIVIDEND YIELD"].astype(float)
 
+fiis['ULT. RENDIMENTO'] = fiis['ULT. RENDIMENTO'].str.replace('.', '')
+fiis['ULT. RENDIMENTO'] = fiis['ULT. RENDIMENTO'].str.replace('R$ ', '')
+fiis['ULT. RENDIMENTO'] = fiis['ULT. RENDIMENTO'].str.replace(',', '.')
+fiis['ULT. RENDIMENTO'] = fiis['ULT. RENDIMENTO'].astype(float)
+
 fiis.drop(columns=['TIPO DE INVESTIMENTO'], inplace=True)
+
+# Metrics
+col1, col2, col3, col4, col5, col6 = st.columns(6)
+
+with col1:
+    st.metric(label="Total de Investimento", value=f"R$ {fiis['VALOR BRUTO'].sum():,.2f}")
+
+with col2:
+    total_rendimento = fiis['ULT. RENDIMENTO'] * fiis['QUANTIDADE']
+    st.metric(label="Total de Rendimento(último mês)", value=f"R$ {total_rendimento.sum():,.2f}")
+
+with col3:
+    st.metric(label="Total de Ativos", value=f"{len(fiis)}")
+
+with col4:
+    maior = fiis['VALOR BRUTO'].values.max()
+    nome = fiis[fiis['VALOR BRUTO'] == maior]['DESCRIÇÃO'].values[0]
+
+    st.metric(label=f"Maior posição ({nome})", value=f"R$ {maior:,.2f}")
+
+with col5:
+    porcentagem_mes = (total_rendimento.sum() / fiis['VALOR BRUTO'].sum()) * 100
+    st.metric(label=f"Rendimento Mensal(%)", value=f"{porcentagem_mes:,.2f}%")
+
+with col6:
+    media_valorizacao = fiis['VALORIZAÇÃO'].mean()
+    st.metric(label=f"Valorização Média(%)", value=f"{media_valorizacao:,.2f}%")
 
 
 def bigger_than_pvp(value):
@@ -150,7 +184,8 @@ styled_df_fiis = styled_df_fiis.format({
     'VALOR BRUTO': 'R${:,.2f}',
     'VALORIZAÇÃO': '{:.2f}%',
     'COTAÇÃO': 'R$ {:,.2f}',
-    'DIVIDEND YIELD': '{:.2f}%'
+    'DIVIDEND YIELD': '{:.2f}%',
+    'ULT. RENDIMENTO': 'R$ {:,.2f}',
 })
 
 styled_df_fiis = styled_df_fiis.applymap(bigger_than_pvp, subset=['P/VP'])
